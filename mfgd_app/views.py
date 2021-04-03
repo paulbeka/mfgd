@@ -257,7 +257,8 @@ def info(request, permission, repo_name, oid):
             self.deletion = f"--{delete}"
 
     if permission == permission.NO_ACCESS:
-        raise Http404("no matching repository")
+        # TODO return Http404 properly
+        return HttpResponseNotFound("no  matching repository")
 
     db_repo_obj = get_object_or_404(Repository, name=repo_name)
     repo = mpygit.Repository(db_repo_obj.path)
@@ -293,7 +294,8 @@ def chain_default(request, repo_name):
 @verify_user_permissions
 def chain(request, permission, repo_name, oid):
     if permission == permission.NO_ACCESS:
-        raise Http404("no matching repository")
+        # TODO return Http404 properly
+        return HttpResponseNotFound("no matching repository")
 
     db_repo_obj = get_object_or_404(Repository, name=repo_name)
     repo = mpygit.Repository(db_repo_obj.path)
