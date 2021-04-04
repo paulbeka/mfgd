@@ -31,7 +31,8 @@ def index(request):
 
     accessible_repos = Repository.objects.filter(isPublic=True)
     if not request.user.is_anonymous:
-        if request.user.userprofile.isAdmin:
+
+        if hasattr(request.user, 'userprofile') and request.user.userprofile.isAdmin:
             accessible_repos = Repository.objects.all()
         else:
             try:
@@ -48,7 +49,6 @@ def index(request):
 
     context_dict["repositories"] = accessible_repos
     return render(request, "index.html", context_dict)
-
 
 def read_blob(blob):
     # 100K
@@ -375,6 +375,9 @@ def manage_repo(request, permission, repo_name):
 
     context = {
         "repo_name": repo_name,
+        "desc": db_repo.description,
+        "url" : db_repo.path,
+        "is_public": db_repo.isPublic,
         "users": users,
         "is_public": db_repo.isPublic,
         "oid": default_branch(db_repo),
@@ -430,22 +433,10 @@ def update_repo_visibility(repo, payload):
     repo.save()
 
 
-def manage(request):
-    if request.user.is_superuser:
-        context_dict = {}
-        repos = Repository.objects.all()
-        for repo in repos:
-            repo.default_branch = default_branch(repo)
-        context_dict['repositories'] = repos
-        return render(request, "manage.html", context=context_dict)
-    else:
-        return redirect('index')
-
-
 def delete_repo(request, repo_name):
     if request.user.is_superuser:
         Repository.objects.filter(name=repo_name).delete()
-    return redirect("manage")
+    return redirect("index")
 
 
 def add_repo(request):
@@ -463,7 +454,7 @@ def add_repo_form(request):
             canaccess = CanAccess(user=request.user.userprofile, repo=repo)
             canaccess.canManage = True
             canaccess.save()
-    return redirect("manage")
+    return redirect("index")
 
 def error_404(request, exception):
     return render(request, "404.html", {})

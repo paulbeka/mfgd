@@ -7,11 +7,26 @@ Manage Repository
 
 {% block head_block %}
 <link rel="stylesheet" href="{% static 'style/manage_repo.css' %}" />
+<link rel="stylesheet" href="{% static 'style/login.css' %}" />
 {% endblock %}
 
 {% block body_block %}
 <h1>Manage repository</h1>
-
+<a class="button" href="delete_repo/{{ repo.name }}">Delete</a>
+<form method="post" action="{% url 'add_repo_form' %}">
+    {% csrf_token %}
+    <div class="login_label">Repository name</div>
+    <div class="login_control"><input type="text" name="name" cols="50" value="{{ repo_name }}" /></div>
+    <div class="login_label">Repository path</div>
+    <div class="login_control"><input type="text" name="path" cols="50" value="{{ url }}" /></div>
+    <div class="login_label">Repository description</div>
+    <div class="login_control"><textarea type="text" name="description" rows="5" cols="50">{{ desc }}</textarea></div>
+<div id="serv-msg">
+    {% if error %}
+        <strong>{{ error|escape }}</strong>
+    {% endif %}
+</div>
+</form>
 <span class="box-label">Global settings</span>
 <div id="global-settings">
     <table id="global-settings-table">
@@ -64,6 +79,8 @@ Manage Repository
 </table>
 
 <div id="serv-msg"></div>
+
+<div class="login_submit"><input type="submit" value="Submit" /></div>
 
 <script>
 function make_req(json, success) {
