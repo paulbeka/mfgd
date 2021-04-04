@@ -22,10 +22,16 @@ REPO_DIR.mkdir()
 
 def create_profile(username, password, email="", is_admin=False):
     user, created = User.objects.get_or_create(
+<<<<<<< HEAD
         username=username, email=email, password=make_password(password), is_superuser=is_admin
     )
     if created:
         print("Password: ", str(pswd))
+=======
+        username=username, email=email, password=make_password(password)
+    )
+    if created:
+>>>>>>> b1b9f494a5d8f1374b9527670bfea0f3485c3a30
         user.save()
     profile, created = UserProfile.objects.get_or_create(user=user, isAdmin=is_admin)
     if created:
@@ -70,9 +76,17 @@ def populate():
 
 def create_users():
     users = {
+<<<<<<< HEAD
         "birb": ("squawk", "bird@birdcage.info", True),
         "mate": ("not today", "mate@fsf.org", True),
         "paul": ("something idk", "2517073B@student.gla.ac.uk", True),
+=======
+        "richard": ("GNU/Linux", "rms@gnu.org"),
+        "birb": ("squawk", "bird@birdcage.info", True),
+        "mate": ("soylicious", "mate@fsf.org", True),
+        "paul": ("something idk", "paul@paulbeka.com"),
+        "luke": ("bugman", "luke@lukesmith.xyz"),
+>>>>>>> b1b9f494a5d8f1374b9527670bfea0f3485c3a30
         "david": ("vs software goliath", "david@slingshots.r.us"),
         "geohot": ("lol @ s0ny", "geohot@fast.ai"),
         "linus": ("i hate cpp", "linus@kernel.org"),
@@ -98,7 +112,11 @@ def create_repositories(users):
             "https://github.com/birb007/mfgd.git",
             "Self-hosted moderately friendly Git display written in Django.",
             False,
+<<<<<<< HEAD
             users["vader"],
+=======
+            users["richard"],
+>>>>>>> b1b9f494a5d8f1374b9527670bfea0f3485c3a30
         ),
         "sauron": (
             "https://github.com/birb007/sauron.git",
@@ -109,7 +127,11 @@ def create_repositories(users):
         "mcc": (
             "https://github.com/kukrimate/mcc.git",
             "[WIP] Project goal: C99 compiler.",
+<<<<<<< HEAD
             True,
+=======
+            False,
+>>>>>>> b1b9f494a5d8f1374b9527670bfea0f3485c3a30
             users["mate"],
         ),
         "momo_project": (
@@ -118,6 +140,15 @@ def create_repositories(users):
             True,
             users["paul"],
         ),
+<<<<<<< HEAD
+=======
+        "based.cooking": (
+            "https://github.com/LukeSmithxyz/based.cooking.git",
+            "A simple culinary website.",
+            True,
+            users["luke"],
+        ),
+>>>>>>> b1b9f494a5d8f1374b9527670bfea0f3485c3a30
     }
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -136,6 +167,7 @@ def apply_permissions(repositories, users):
     permissions = {
         repositories["mfgd"]: {
             "manage": (users["birb"], users["mate"], users["paul"]),
+<<<<<<< HEAD
             "view": (users["enrique"],),
         },
         repositories["mcc"]: {
@@ -145,6 +177,21 @@ def apply_permissions(repositories, users):
         repositories["momo_project"]: {
             "manage": (users["paul"],),
             "view": (users["birb"],),
+=======
+            "view": (users["luke"],),
+        },
+        repositories["mcc"]: {
+            "manage": (users["mate"],),
+            "view": (),
+        },
+        repositories["momo_project"]: {
+            "manage": (users["paul"],),
+            "view": (users["birb"], users["richard"]),
+        },
+        repositories["based.cooking"]: {
+            "manage": (users["luke"], users["richard"]),
+            "view": (users["mate"], users["paul"], users["birb"]),
+>>>>>>> b1b9f494a5d8f1374b9527670bfea0f3485c3a30
         },
     }
     with concurrent.futures.ThreadPoolExecutor() as executor:

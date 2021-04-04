@@ -18,7 +18,6 @@ from mfgd_app.utils import verify_user_permissions, Permission
 from mfgd_app.models import Repository, CanAccess, UserProfile
 from mfgd_app.forms import UserForm, RepoForm, UserUpdateForm, ProfileUpdateForm, PasswordForm
 
-
 def default_branch(db_repo_obj):
     # NOTE: someone please fix this if you can, but the pygit2 API does not
     # provide access to the global HEAD as it's not a proper ref
@@ -431,7 +430,43 @@ def update_repo_visibility(repo, payload):
     public = get_entry("public", bool)
     repo.isPublic = public
     repo.save()
+    context = {"repo_name": repo_name, "oid": oid, "commits": utils.walk(repo, obj.oid)}
+    return render(request, "chain.html", context=context)
 
+def manage(request):
+    if request.user.is_superuser:
+
+        context_dict = {}
+        repos = Repository.objects.all()
+        for repo in repos:
+            repo.default_branch = default_branch(repo)
+        context_dict['repositories'] = repos
+        return render(request, "manage.html", context=context_dict)
+
+    else:
+        return redirect('index')
+
+def delete_repo(request, repo_name):
+    if request.user.is_superuser:
+        Repository.objects.filter(name=repo_name).delete()
+    return redirect("manage")
+
+def add_repo(request):
+    return render(request, "add_repo.html")
+
+def add_repo_form(request):
+    if request.method == "POST" and request.user.is_superuser:
+        repo_form = RepoForm(request.POST)
+        if repo_form.is_valid():
+            # create repo
+            Repo = repo_form.save()
+            Repo.save()
+
+            canaccess = CanAccess(user=UserProfile.objects.get(user=request.user), repo=Repo)
+            canaccess.canManage = True
+            canaccess.save()
+
+    return redirect("manage")
 
 def delete_repo(request, repo_name):
     if request.user.is_superuser:
