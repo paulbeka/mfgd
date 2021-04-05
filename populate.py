@@ -152,7 +152,7 @@ def apply_permissions(repositories, users):
             "view": (users["birb"], users["richard"]),
         },
         repositories["based.cooking"]: {
-            "manage": (users["luke"], users["richard"]),
+            "manage": (users["richard"]),
             "view": (users["mate"], users["paul"], users["birb"]),
         },
     }
