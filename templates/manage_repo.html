@@ -12,7 +12,9 @@ Manage Repository
 
 {% block body_block %}
 <h1>Manage repository</h1>
-<a class="button" href="delete_repo/{{ repo.name }}">Delete</a>
+<div class="login_submit">
+    <a class='button' href='delete_repo/{{ repo.name }}'><input  style="background: red;" type="button" value="Delete Repository" /></a>
+</div>
 <form method="post" action="{% url 'add_repo_form' %}">
     {% csrf_token %}
     <div class="login_label">Repository name</div>

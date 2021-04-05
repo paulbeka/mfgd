@@ -437,7 +437,11 @@ def update_repo_visibility(repo, payload):
 
 def update_details(repo, payload):
     repository = get_object_or_404(Repository, name=repo)
-    repository.name = payload["name"]
+    if repository.name != payload["name"]:
+        newRepo = Repository(name=payload["name"], path=payload["path"], description=payload["desc"],
+            isPublic=repository.isPublic)
+        repository.delete()
+        newRepo.save()
     repository.path = payload["path"]
     repository.description = payload["desc"]
     repository.save()
