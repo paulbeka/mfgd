@@ -459,9 +459,9 @@ def add_repo_form(request):
     return redirect("index")
 
 @verify_user_permissions
-def delete_repo(request, repo_name, permisson):
+def delete_repo(request, permisson, repo_name):
     if request.user.is_superuser or permission.CAN_MANAGE:
-        Repository.objects.get_object_or_404(name=repo_name).delete()
+        get_object_or_404(Repository, name=repo_name).delete()
     return redirect("index")
 
 
