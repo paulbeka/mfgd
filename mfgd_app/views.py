@@ -376,7 +376,6 @@ def manage_repo(request, permission, repo_name):
         "repo_name": repo_name,
         "desc": db_repo.description,
         "url" : db_repo.path,
-        "is_public": db_repo.isPublic,
         "users": users,
         "is_public": db_repo.isPublic,
         "oid": default_branch(db_repo),
@@ -433,26 +432,17 @@ def update_repo_visibility(repo, payload):
     context = {"repo_name": repo_name, "oid": oid, "commits": utils.walk(repo, obj.oid)}
     return render(request, "chain.html", context=context)
 
-def manage(request):
-    if request.user.is_superuser:
-
-        context_dict = {}
-        repos = Repository.objects.all()
-        for repo in repos:
-            repo.default_branch = default_branch(repo)
-        context_dict['repositories'] = repos
-        return render(request, "manage.html", context=context_dict)
-
-    else:
-        return redirect('index')
 
 def delete_repo(request, repo_name):
     if request.user.is_superuser:
         Repository.objects.filter(name=repo_name).delete()
-    return redirect("manage")
+    return redirect("index")
 
 def add_repo(request):
-    return render(request, "add_repo.html")
+    if request.user.is_superuser:
+        return render(request, "add_repo.html")
+    else:
+        return redirect("index")
 
 def add_repo_form(request):
     if request.method == "POST" and request.user.is_superuser:
@@ -466,11 +456,12 @@ def add_repo_form(request):
             canaccess.canManage = True
             canaccess.save()
 
-    return redirect("manage")
+    return redirect("index")
 
-def delete_repo(request, repo_name):
-    if request.user.is_superuser:
-        Repository.objects.filter(name=repo_name).delete()
+@verify_user_permissions
+def delete_repo(request, repo_name, permisson):
+    if request.user.is_superuser or permission.CAN_MANAGE:
+        Repository.objects.get_object_or_404(name=repo_name).delete()
     return redirect("index")
 
 
