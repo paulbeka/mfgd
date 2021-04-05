@@ -2,6 +2,7 @@
  * Global page style
  */
 
+/* Sane defaults */
 * {
     box-sizing: border-box;
     font-family: sans-serif;
@@ -9,6 +10,11 @@
     padding: 0px;
     margin: 0px;
     color: black;
+}
+
+/* Sane list sizing */
+ul {
+    list-style: disc inside none;
 }
 
 h1 {
@@ -99,4 +105,25 @@ img {
 
 #serv-msg {
     padding: 5px;
+}
+
+/* Green button */
+.button {
+    display: inline-block;
+    padding: 10px;
+    color: white;
+    background: #1fbfa7;
+    border: 1px solid #199481;
+    border-radius: 5px;
+}
+
+.button:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* Server message */
+#serv-msg {
+    padding: 10px 0;
+    font-style: italic;
 }
