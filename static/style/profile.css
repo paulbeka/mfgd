@@ -15,12 +15,23 @@
 }
 
 .profile_img {
+    z-index: 1;
     border-radius: 100px;
     height: 150px;
     width: 150px;
     position: relative;
     margin-bottom: -50px;
     top: -70px;
+}
+
+@media only screen and (max-width: 800px) {
+    #global_center {
+        margin-top: 20px;
+    }
+    .profile_img {
+        position: initial;
+        margin-bottom: 20px;
+    }
 }
 
 h2 {

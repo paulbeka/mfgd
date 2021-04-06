@@ -2,8 +2,11 @@
  * Login page style
  */
 
-#global_center {
-    min-width: 420px;
+@media only screen and (max-width: 800px) {
+    #global_center {
+        max-width: 100%;
+        overflow: scroll;
+    }
 }
 
 .form_msg {
@@ -19,8 +22,9 @@
     margin-top: 12px;
 }
 
-.form_control input {
+.form_control input, .form_control textarea {
     width: 100%;
+    max-width: 100%;
 }
 
 .form_checkbox input {
