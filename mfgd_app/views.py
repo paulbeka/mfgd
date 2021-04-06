@@ -2,11 +2,12 @@ import binascii
 import json
 import re
 
+from pathlib import Path
+
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django import urls
-from pathlib import Path
 from django.http import HttpResponseNotFound
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -347,11 +348,11 @@ def manage_repo(request, permission, repo_name):
                 update_profile_permissions(db_repo, request.user.userprofile, payload)
             elif action == "publicize":
                 update_repo_visibility(db_repo, payload)
-            elif action == "update_details":
-                update_details(db_repo,payload)
+            elif action == "update_description":
+                update_description(db_repo, payload)
             else:
                 raise ValueError("invalid management action")
-        except (json.decoder.JSONDecodeError, ValueError, TypeError) as e:
+        except (json.decoder.JSONDecodeError, ValueError, TypeError, KeyError) as e:
             # return exception message
             return HttpResponse(e.args[0], status=400)
         return HttpResponse(status=200)
@@ -433,17 +434,9 @@ def update_repo_visibility(repo, payload):
     return render(request, "chain.html", context=context)
 
 
-def update_details(repo, payload):
-    repository = get_object_or_404(Repository, name=repo)
-    if repository.name != payload["name"]:
-        newRepo = Repository(name=payload["name"], path=payload["path"], description=payload["desc"],
-            isPublic=repository.isPublic)
-        repository.delete()
-        newRepo.save()
-    repository.path = payload["path"]
-    repository.description = payload["desc"]
-    repository.save()
-
+def update_description(repo, payload):
+    repo.description = payload["description"]
+    repo.save()
 
 @verify_user_permissions
 def delete_repo(request, permisson, repo_name):
@@ -452,10 +445,12 @@ def delete_repo(request, permisson, repo_name):
     return redirect("index")
 
 def add_repo(request):
-    return render(request, "add_repo.html", context={ "form": RepoForm() })
+    if request.user.is_anonymous or not request.user.userprofile.isAdmin:
+        return redirect("index")
 
-def add_repo_form(request):
-    if request.method == "POST" and request.user.is_superuser:
+    context = {"form": RepoForm()}
+
+    if request.method == "POST":
         repo_form = RepoForm(request.POST)
         if repo_form.is_valid():
             # create repo
@@ -465,11 +460,13 @@ def add_repo_form(request):
             canaccess = CanAccess(user=request.user.userprofile, repo=repo)
             canaccess.canManage = True
             canaccess.save()
-    return redirect("index")
+            return redirect("index")
+        else:
+            context["form"] = repo_form
+    return render(request, "add_repo.html", context=context)
 
 def error_404(request, exception):
     return render(request, "404.html", {})
-
 
 def error_500(request):
     return render(request, "500.html", {})

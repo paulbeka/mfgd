@@ -189,7 +189,6 @@ def create_repositories(users):
             "Asynchronous API wrapper for Onionoo, written in Python.",
             False,
             users["birb"],
->>>>>>> 0e73aa3e156ac35b6b27eced400138a76c26eb25:population_script.py
         ),
     }
 
@@ -217,7 +216,7 @@ def apply_permissions(repositories, users):
         },
         repositories["momo_project"]: {
             "manage": (users["paul"],),
-            "view": (users["birb"], users["richard"]),
+            "view": (users["birb"]),
         },
         repositories["based.cooking"]: {
             "manage": (users["richard"]),

@@ -7,7 +7,8 @@ Manage Repository
 
 {% block head_block %}
 <link rel="stylesheet" href="{% static 'style/manage_repo.css' %}" />
-<link rel="stylesheet" href="{% static 'style/login.css' %}" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="{% static 'scripts/manage.js' %}"></script>
 {% endblock %}
 
 {% block body_block %}
@@ -19,7 +20,7 @@ Manage Repository
         <tr>
             <td>Make repository public</td>
             <td>
-                <input type="checkbox" id="publicize" onclick="publicize(this)"
+                <input type="checkbox" id="publicize" onclick="publicize('{% url 'manage_repo' repo_name %}', this)"
                 {% if is_public %}
                     checked
                 {% endif %}/>
@@ -28,6 +29,7 @@ Manage Repository
         <tr>
             <td>Description</td>
             <td><textarea type="text" id="description" cols="50">{{ desc }}</textarea></td>
+            <td><button class="button" type="button" id="change-description" onclick="update_desc('{% url 'manage_repo' repo_name %}', this)">Update</button>
         </tr>
     </table>
 </div>
@@ -49,7 +51,11 @@ Manage Repository
         {% if user.can_view or user.can_manage %}
             checked
         {% endif %}
+<<<<<<< HEAD
         onclick="update_perm(this)" 
+=======
+            onclick="update_perm('{% url 'manage_repo' repo_name %}', this)"
+>>>>>>> 0bbbe882a468729f82e377663ec4760a9f3b0340
         {% if user.isAdmin %}
             disabled
         {% endif %}
@@ -59,7 +65,7 @@ Manage Repository
         {% if user.can_manage %}
             checked
         {% endif %}
-        onclick="update_perm(this)"
+        onclick="update_perm('{% url 'manage_repo' repo_name %}', this)"
         {% if user.isAdmin %}
             disabled
         {% endif %}
@@ -70,11 +76,12 @@ Manage Repository
 
 <span class="box-label">Danger zone</span>
 <div class="manage-box">
-    <a class='button' href='delete_repo/{{ repo.name }}'>Delete Repository</a>
+    <a class='button' href="{% url 'delete_repo' repo_name %}">Delete Repository</a>
 </div>
 
 <div id="serv-msg"></div>
 
+<<<<<<< HEAD
 <div class="login_submit"><input type="button" value="Submit" onclick="update_details()" /></div>
 
 <script>
@@ -141,4 +148,6 @@ function update_perm(box) {
     make_req(json, success);
 }
 </script>
+=======
+>>>>>>> 0bbbe882a468729f82e377663ec4760a9f3b0340
 {% endblock %}
