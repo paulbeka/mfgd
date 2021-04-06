@@ -445,41 +445,14 @@ def update_details(repo, payload):
     repository.save()
 
 
-def delete_repo(request, repo_name):
-    if request.user.is_superuser:
-        Repository.objects.filter(name=repo_name).delete()
-    return redirect("index")
-
-def add_repo(request):
-    if request.user.is_superuser:
-        return render(request, "add_repo.html")
-    else:
-        return redirect("index")
-
-def add_repo_form(request):
-    if request.method == "POST" and request.user.is_superuser:
-        repo_form = RepoForm(request.POST)
-        if repo_form.is_valid():
-            # create repo
-            Repo = repo_form.save()
-            Repo.save()
-
-            canaccess = CanAccess(user=UserProfile.objects.get(user=request.user), repo=Repo)
-            canaccess.canManage = True
-            canaccess.save()
-
-    return redirect("index")
-
 @verify_user_permissions
 def delete_repo(request, permisson, repo_name):
     if request.user.is_superuser or permission.CAN_MANAGE:
         get_object_or_404(Repository, name=repo_name).delete()
     return redirect("index")
 
-
 def add_repo(request):
-    return render(request, "add_repo.html")
-
+    return render(request, "add_repo.html", context={ "form": RepoForm() })
 
 def add_repo_form(request):
     if request.method == "POST" and request.user.is_superuser:

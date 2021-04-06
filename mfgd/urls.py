@@ -42,5 +42,6 @@ urlpatterns = [
     path("add_repo_form/", views.add_repo_form, name="add_repo_form"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+
 handler404 = views.error_404
 handler500 = views.error_500

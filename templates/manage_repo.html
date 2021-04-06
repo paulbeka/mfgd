@@ -12,25 +12,9 @@ Manage Repository
 
 {% block body_block %}
 <h1>Manage repository</h1>
-<div class="login_submit">
-    <a class='button' href='delete_repo/{{ repo.name }}'><input  style="background: red;" type="button" value="Delete Repository" /></a>
-</div>
-<form method="post" action="{% url 'add_repo_form' %}">
-    {% csrf_token %}
-    <div class="login_label">Repository name</div>
-    <div class="login_control"><input type="text" id="name" cols="50" value="{{ repo_name }}" /></div>
-    <div class="login_label">Repository path</div>
-    <div class="login_control"><input type="text" id="path" cols="50" value="{{ url }}" /></div>
-    <div class="login_label">Repository description</div>
-    <div class="login_control"><textarea type="text" id="description" rows="5" cols="50">{{ desc }}</textarea></div>
-<div id="serv-msg">
-    {% if error %}
-        <strong>{{ error|escape }}</strong>
-    {% endif %}
-</div>
-</form>
+
 <span class="box-label">Global settings</span>
-<div id="global-settings">
+<div class="manage-box">
     <table id="global-settings-table">
         <tr>
             <td>Make repository public</td>
@@ -40,6 +24,10 @@ Manage Repository
                     checked
                 {% endif %}/>
             </td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td><textarea type="text" id="description" cols="50">{{ desc }}</textarea></td>
         </tr>
     </table>
 </div>
@@ -79,6 +67,11 @@ Manage Repository
     </tr>
     {% endfor %}
 </table>
+
+<span class="box-label">Danger zone</span>
+<div class="manage-box">
+    <a class='button' href='delete_repo/{{ repo.name }}'>Delete Repository</a>
+</div>
 
 <div id="serv-msg"></div>
 
